@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AI Text Summarizer</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            width: 400px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            width: 100%;
+            background: #4facfe;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .output {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>AI Text Summarizer 🤖</h2>
+
+    <textarea id="inputText" placeholder="Paste your paragraph..."></textarea>
+    <button onclick="summarize()">Summarize</button>
+
+    <div class="output" id="output"></div>
+</div>
+
+<script>
+    function summarize() {
+        let text = document.getElementById("inputText").value;
+
+        if (!text) {
+            alert("Please enter text!");
+            return;
+        }
+
+        let sentences = text.split(/[.!?]/);
+        let words = text.toLowerCase().match(/\w+/g);
+
+        let freq = {};
+
+        words.forEach(word => {
+            freq[word] = (freq[word] || 0) + 1;
+        });
+
+        let sentenceScores = sentences.map(sentence => {
+            let score = 0;
+            let sentenceWords = sentence.toLowerCase().match(/\w+/g);
+
+            if (sentenceWords) {
+                sentenceWords.forEach(word => {
+                    score += freq[word] || 0;
+                });
+            }
+
+            return { sentence: sentence.trim(), score: score };
+        });
+
+        sentenceScores.sort((a, b) => b.score - a.score);
+
+        let summary = sentenceScores.slice(0, 2).map(s => s.sentence).join(". ");
+
+        document.getElementById("output").innerHTML = summary;
+    }
+</script>
+
+</body>
+</html>
